@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">niniProjekt1</string>
+    <string name="lista_produkt_w">Lista Produktów</string>
+    <string name="textviewlistofproducts">textViewListOfProducts</string>
+    <string name="ustawienia">Ustawienia</string>
+    <string name="tryb_ciemny">Tryb ciemny</string>
+    <string name="Opcje">Ustawienia</string>
+    <string name="nameOfProduct">Nazwa</string>
+    <string name="quantity">ilość</string>
+    <string name="price">Cena</string>
+    <string name="add">Dodaj</string>
+    <string name="addProductToList">Dodaj produkt do listy</string>
+    <string name="deleteAll">Usuń wszystko</string>
+    <string name="mainTV">Aplikacja</string>
+    <string name="kolor_fioletowy">Kolor fioletowy</string>
+    <string name="choose_theme_text">Wybierz kolor guzików</string>
+</resources>
