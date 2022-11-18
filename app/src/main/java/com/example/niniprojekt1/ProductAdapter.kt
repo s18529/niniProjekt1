@@ -1,5 +1,7 @@
 package com.example.niniprojekt1
 
+import android.annotation.SuppressLint
+import android.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
@@ -15,6 +17,8 @@ class ProductAdapter (private val viewModel: ProductViewModel) : RecyclerView.Ad
 
     var positionPom: Int? = null
 
+
+
     class ViewHolder(val binding: ElementBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -22,6 +26,7 @@ class ProductAdapter (private val viewModel: ProductViewModel) : RecyclerView.Ad
         return ViewHolder(binding)
     }
 
+    @SuppressLint("SuspiciousIndentation")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
          //var positionPom = 0
         holder.binding.textView2.text = products[position].name
@@ -37,6 +42,7 @@ class ProductAdapter (private val viewModel: ProductViewModel) : RecyclerView.Ad
             CoroutineScope(Dispatchers.IO).launch {
                 viewModel.update(product)
             }
+
             Toast.makeText(holder.binding.root.context, "Zaktualizowano produkt o id: ${products[position].id}", Toast.LENGTH_LONG).show()
         }
 
@@ -73,12 +79,13 @@ class ProductAdapter (private val viewModel: ProductViewModel) : RecyclerView.Ad
     }
 
     suspend fun delete(){
+
         if (positionPom != null) {
             CoroutineScope(Dispatchers.IO).launch {
                 viewModel.delete(products[positionPom!!])
             }
             //positionPom = null
-
+            //Toast.makeText(ViewHolder., positionPom.toString(), Toast.LENGTH_SHORT).show()
         }else{
 
         }
@@ -96,11 +103,8 @@ class ProductAdapter (private val viewModel: ProductViewModel) : RecyclerView.Ad
     }
 
 
-
     fun setProducts(dbproducts: List<Product>){
         products = dbproducts
         notifyDataSetChanged()
     }
-
-
 }
