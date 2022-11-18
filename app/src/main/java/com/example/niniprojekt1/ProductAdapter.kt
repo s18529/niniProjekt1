@@ -13,6 +13,8 @@ class ProductAdapter (private val viewModel: ProductViewModel) : RecyclerView.Ad
 
     private var products = emptyList<Product>()
 
+    var positionPom: Int? = null
+
     class ViewHolder(val binding: ElementBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -21,6 +23,7 @@ class ProductAdapter (private val viewModel: ProductViewModel) : RecyclerView.Ad
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+         //var positionPom = 0
         holder.binding.textView2.text = products[position].name
         holder.binding.textView3.text = products[position].price.toString()
         holder.binding.textView.text = products[position].quantity.toString()
@@ -38,10 +41,25 @@ class ProductAdapter (private val viewModel: ProductViewModel) : RecyclerView.Ad
         }
 
         holder.binding.root.setOnClickListener{
-            CoroutineScope(Dispatchers.IO).launch {
-                viewModel.delete(products[position])
-            }
-            Toast.makeText(holder.binding.root.context, "Usunięto produkt o id: ${products[position].id}", Toast.LENGTH_SHORT).show()
+
+            positionPom = holder.adapterPosition
+//            CoroutineScope(Dispatchers.IO).launch {
+//                viewModel.delete(products[position])
+//            }
+                Toast.makeText(holder.binding.root.context, "Zaznaczono element o id: ${products[position].id}", Toast.LENGTH_SHORT).show()
+
+            //Toast.makeText(holder.binding.root.context, "Usunięto produkt o id: ${products[position].id}", Toast.LENGTH_SHORT).show()
+        }
+//        holder.binding.buttonList2.setOnClickListener {
+//            Toast.makeText(holder.binding.root.context, positionPom.toString(), Toast.LENGTH_SHORT).show()
+//        }
+    }
+
+    suspend fun update(product: Product){
+
+        viewModel.update(product)
+        withContext(Dispatchers.Main){
+            notifyDataSetChanged()
         }
     }
 
@@ -54,12 +72,20 @@ class ProductAdapter (private val viewModel: ProductViewModel) : RecyclerView.Ad
         }
     }
 
-    suspend fun delete(product: Product, position: Int){
-        viewModel.delete(product)
+    suspend fun delete(){
+        if (positionPom != null) {
+            CoroutineScope(Dispatchers.IO).launch {
+                viewModel.delete(products[positionPom!!])
+            }
+            //positionPom = null
+
+        }else{
+
+        }
         withContext(Dispatchers.Main){
-            viewModel.delete(products[position])
             notifyDataSetChanged()
         }
+        positionPom = null
     }
 
     suspend fun deleteAll(){
@@ -69,12 +95,7 @@ class ProductAdapter (private val viewModel: ProductViewModel) : RecyclerView.Ad
         }
     }
 
-    suspend fun update(product: Product){
-        viewModel.update(product)
-        withContext(Dispatchers.Main){
-            notifyDataSetChanged()
-        }
-    }
+
 
     fun setProducts(dbproducts: List<Product>){
         products = dbproducts

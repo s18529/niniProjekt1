@@ -54,8 +54,8 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv1"
-        android:layout_width="360dp"
-        android:layout_height="464dp"
+        android:layout_width="386dp"
+        android:layout_height="349dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="31dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -93,5 +93,16 @@
         android:text="@string/deleteAll"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/checkBox" />
+
+    <Button
+        android:id="@+id/buttonDeleteSelected"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="52dp"
+        android:layout_marginEnd="20dp"
+        android:backgroundTint="@color/red"
+        android:text="@string/usu"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rv1" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

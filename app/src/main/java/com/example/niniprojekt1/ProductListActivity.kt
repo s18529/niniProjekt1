@@ -60,6 +60,16 @@ class ProductListActivity : AppCompatActivity() {
             Toast.makeText(binding.root.context,"Dodano nowy produkt",Toast.LENGTH_SHORT).show()
         }
 
+
+        binding.buttonDeleteSelected.setOnClickListener(){
+            CoroutineScope(Dispatchers.IO).launch {
+                productadapter.delete()
+            }
+            Toast.makeText(binding.root.context,"Usunięto produkt",Toast.LENGTH_SHORT).show()
+        }
+
+
+
         binding.buttonDelete.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {
                 productadapter.deleteAll()
