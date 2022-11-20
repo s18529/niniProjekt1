@@ -116,8 +116,12 @@ class MyContentProvider : ContentProvider(){
         TODO("Not yet implemented")
     }
 
-    override fun delete(p0: Uri, p1: String?, p2: Array<out String>?): Int {
-        TODO("Not yet implemented")
+    override fun delete(uri: Uri,
+                        selection: String?,
+                        selectionArgs: Array<String>?): Int {
+        var count = 0
+        db!!.delete(TABLE_NAME, selection, selectionArgs)
+        return count
     }
 
     // creating object of database

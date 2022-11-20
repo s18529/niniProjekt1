@@ -84,6 +84,13 @@ class ProductListActivity : AppCompatActivity() {
             CoroutineScope(Dispatchers.IO).launch {
                 productadapter.deleteAll()
             }
+            CoroutineScope(Dispatchers.IO).launch {
+                contentResolver.delete(
+                    MyContentProvider.CONTENT_URI,
+                    null,
+                    null
+                )
+            }
         }
     }
 
