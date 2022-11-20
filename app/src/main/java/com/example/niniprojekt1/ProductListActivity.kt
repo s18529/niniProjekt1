@@ -56,14 +56,14 @@ class ProductListActivity : AppCompatActivity() {
                     quantity = (binding.quantity.text.toString()).toInt(),
                     state = binding.checkBox.isChecked)
                 )
-                CoroutineScope(Dispatchers.IO).launch {
+
                     val values = ContentValues()
                     values.put(MyContentProvider.name, binding.name.text.toString())
                     values.put(MyContentProvider.price, binding.price.text.toString().toDouble())
 
 
                     contentResolver.insert(MyContentProvider.CONTENT_URI, values)
-                }
+
 
                 binding.name.text.clear()
                 binding.price.text.clear()
