@@ -1,9 +1,13 @@
 package com.example.niniprojekt1
 
+import android.content.ContentValues
 import android.content.Context
 import android.content.SharedPreferences
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.lifecycle.Observer
@@ -52,6 +56,15 @@ class ProductListActivity : AppCompatActivity() {
                     quantity = (binding.quantity.text.toString()).toInt(),
                     state = binding.checkBox.isChecked)
                 )
+                CoroutineScope(Dispatchers.IO).launch {
+                    val values = ContentValues()
+                    values.put(MyContentProvider.name, binding.name.text.toString())
+                    values.put(MyContentProvider.price, binding.price.text.toString().toDouble())
+
+
+                    contentResolver.insert(MyContentProvider.CONTENT_URI, values)
+                }
+
                 binding.name.text.clear()
                 binding.price.text.clear()
                 binding.quantity.text.clear()
@@ -60,15 +73,12 @@ class ProductListActivity : AppCompatActivity() {
             Toast.makeText(binding.root.context,"Dodano nowy produkt",Toast.LENGTH_SHORT).show()
         }
 
-
         binding.buttonDeleteSelected.setOnClickListener(){
             CoroutineScope(Dispatchers.IO).launch {
                 productadapter.delete()
             }
-            Toast.makeText(binding.root.context,"Usunięto produkt",Toast.LENGTH_SHORT).show()
+            //Toast.makeText(binding.root.context,"Usunięto produkt",Toast.LENGTH_SHORT).show()
         }
-
-
 
         binding.buttonDelete.setOnClickListener {
             CoroutineScope(Dispatchers.IO).launch {

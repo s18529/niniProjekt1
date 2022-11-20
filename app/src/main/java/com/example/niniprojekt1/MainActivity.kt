@@ -50,6 +50,7 @@ class MainActivity : AppCompatActivity() {
         }
         delegate.applyDayNight()
 
+
     }
 
     override fun onStart() {

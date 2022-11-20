@@ -15,4 +15,6 @@
     <string name="kolor_fioletowy">Kolor fioletowy</string>
     <string name="choose_theme_text">Wybierz kolor guzików</string>
     <string name="usu">Usuń</string>
+    <string name="kolor_zielony">Kolor Zielony</string>
+    <string name="czy_kupiony">Czy kupiony?</string>
 </resources>
