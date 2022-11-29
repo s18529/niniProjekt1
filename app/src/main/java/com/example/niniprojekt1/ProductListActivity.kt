@@ -1,8 +1,6 @@
 package com.example.niniprojekt1
 
-import android.content.ContentValues
-import android.content.Context
-import android.content.SharedPreferences
+import android.content.*
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -23,6 +21,7 @@ class ProductListActivity : AppCompatActivity() {
     private lateinit var binding: ActivityProductListBinding
     private lateinit var sp: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
+    private var maxId :Long=0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,13 +48,14 @@ class ProductListActivity : AppCompatActivity() {
 
 
         binding.addButton.setOnClickListener {
+            val products = Product(name = binding.name.text.toString(),
+                price = (binding.price.text.toString()).toDouble(),
+                quantity = (binding.quantity.text.toString()).toInt(),
+                state = binding.checkBox.isChecked)
             CoroutineScope(Dispatchers.IO).launch {
-                productadapter.add(
-                    Product(name = binding.name.text.toString(),
-                    price = (binding.price.text.toString()).toDouble(),
-                    quantity = (binding.quantity.text.toString()).toInt(),
-                    state = binding.checkBox.isChecked)
-                )
+
+                //Projekt 2
+                productadapter.add(products)
 
                     val values = ContentValues()
                     values.put(MyContentProvider.name, binding.name.text.toString())
@@ -70,6 +70,24 @@ class ProductListActivity : AppCompatActivity() {
                 binding.quantity.text.clear()
                 binding.checkBox.isChecked = false
             }
+
+
+
+            CoroutineScope(Dispatchers.IO).launch {
+                maxId = productadapter.maxId()
+            }
+
+            sendBroadcast(Intent().also {
+                it.component = ComponentName(
+                    "com.example.appprivider",
+                     "com.example.appprivider.ProductsReceiver"
+                    )
+                it.putExtra("idProduct", maxId)
+                it.putExtra("nameProducts", products.name)
+                it.putExtra("priceProducts", products.price)
+            })
+
+
             Toast.makeText(binding.root.context,"Dodano nowy produkt",Toast.LENGTH_SHORT).show()
         }
 
@@ -77,7 +95,6 @@ class ProductListActivity : AppCompatActivity() {
             CoroutineScope(Dispatchers.IO).launch {
                 productadapter.delete()
             }
-            //Toast.makeText(binding.root.context,"Usunięto produkt",Toast.LENGTH_SHORT).show()
         }
 
         binding.buttonDelete.setOnClickListener {

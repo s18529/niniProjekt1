@@ -8,6 +8,7 @@ class ProductRepository(private val productDao: ProductDao) {
     suspend fun update(product: Product) = productDao.update(product)
     suspend fun delete(product: Product) = productDao.delete(product)
     suspend fun deleteAll() = productDao.deleteAll()
+    suspend fun maxId() :Long = productDao.maxId()
 
 
 }

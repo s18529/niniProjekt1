@@ -24,6 +24,8 @@ class ProductViewModel(app: Application) : AndroidViewModel(app) {
 
     suspend fun deleteAll() = repo.deleteAll()
 
+    suspend fun maxId() : Long = repo.maxId()
+
 
 
 

@@ -17,8 +17,6 @@ class ProductAdapter (private val viewModel: ProductViewModel) : RecyclerView.Ad
 
     var positionPom: Int? = null
 
-
-
     class ViewHolder(val binding: ElementBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -28,13 +26,11 @@ class ProductAdapter (private val viewModel: ProductViewModel) : RecyclerView.Ad
 
     @SuppressLint("SuspiciousIndentation")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-         //var positionPom = 0
         holder.binding.textView2.text = products[position].name
         holder.binding.textView3.text = products[position].price.toString()
         holder.binding.textView.text = products[position].quantity.toString()
         holder.binding.checkBox.isChecked = products[position].state
 
-        //holder.binding.checkBox.isChecked = products[position].state
         holder.binding.checkBox.setOnClickListener {
             val product = products[position]
 
@@ -43,22 +39,21 @@ class ProductAdapter (private val viewModel: ProductViewModel) : RecyclerView.Ad
                 viewModel.update(product)
             }
 
-            Toast.makeText(holder.binding.root.context, "Zaktualizowano produkt o id: ${products[position].id}", Toast.LENGTH_LONG).show()
+            Toast.makeText(holder.binding.root.context,
+                "Zaktualizowano produkt o id: ${products[position].id}",
+                Toast.LENGTH_LONG)
+                .show()
         }
 
         holder.binding.root.setOnClickListener{
-
             positionPom = holder.adapterPosition
-//            CoroutineScope(Dispatchers.IO).launch {
-//                viewModel.delete(products[position])
-//            }
-                Toast.makeText(holder.binding.root.context, "Zaznaczono element o id: ${products[position].id}", Toast.LENGTH_SHORT).show()
 
-            //Toast.makeText(holder.binding.root.context, "Usunięto produkt o id: ${products[position].id}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(holder.binding.root.context,
+                "Zaznaczono element o id: ${products[position].id}",
+                Toast.LENGTH_SHORT)
+                .show()
         }
-//        holder.binding.buttonList2.setOnClickListener {
-//            Toast.makeText(holder.binding.root.context, positionPom.toString(), Toast.LENGTH_SHORT).show()
-//        }
+
     }
 
     suspend fun update(product: Product){
@@ -100,6 +95,9 @@ class ProductAdapter (private val viewModel: ProductViewModel) : RecyclerView.Ad
         withContext(Dispatchers.Main){
             notifyDataSetChanged()
         }
+    }
+    suspend fun maxId():Long{
+        return viewModel.maxId()
     }
 
 

@@ -24,4 +24,7 @@ interface ProductDao {
 
     @Query("Delete from product")
     fun deleteAll()
+
+    @Query("SELECT max(id) FROM product")
+    fun maxId() :Long
 }
