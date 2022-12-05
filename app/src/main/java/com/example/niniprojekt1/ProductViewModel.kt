@@ -12,6 +12,7 @@ class ProductViewModel(app: Application) : AndroidViewModel(app) {
     private val repo: ProductRepository
     var firebaseDatabase: FirebaseDatabase
     val allProducts: MutableLiveData<HashMap<String,Product>>
+    val allUserProduct: MutableLiveData<HashMap<String,Product>>
 
     init {
 
@@ -20,15 +21,26 @@ class ProductViewModel(app: Application) : AndroidViewModel(app) {
         //val productDao = ProductDB.getDatabase(app.applicationContext)!!.getProductDao()
         repo = ProductRepository(firebaseDatabase)
         allProducts = repo.allProducts
+
+        allUserProduct = repo.allUserProducts
     }
 
-    suspend fun insert(product: Product) = repo.inster(product)
+ fun insert(product: Product) = repo.inster(product)
 
-    suspend fun update(product: Product) = repo.update(product)
 
-    suspend fun delete(product: Product) = repo.delete(product)
+    fun insterUserProduct(users: String?,product: Product) = repo.insterUserProduct(users,product)
 
-    suspend fun deleteAll() = repo.deleteAll()
+     fun update(product: Product) = repo.update(product)
+
+     fun updateUserProduct(users: String?,product: Product) = repo.updateUserProduct(users,product)
+
+     fun delete(product: Product) = repo.delete(product)
+
+     fun deleteUserProduct(users: String?,product: Product) = repo.deleteUserProduct(users,product)
+
+     fun deleteAll() = repo.deleteAll()
+
+     fun deleteAllUserProducts(users: String?) = repo.deleteAllUserProducts(users)
 
     //suspend fun maxId() : Long = repo.maxId()
 

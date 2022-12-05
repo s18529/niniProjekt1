@@ -1,34 +1,32 @@
 package com.example.niniprojekt1
 
-import android.app.UiModeManager.MODE_NIGHT_YES
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.Typeface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
-import androidx.appcompat.widget.AppCompatButton
-import androidx.appcompat.widget.AppCompatEditText
 import com.example.niniprojekt1.databinding.ActivityMainBinding
-import com.google.android.material.resources.CancelableFontCallback.ApplyFont
 import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var sp: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
-
     private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        sp = getSharedPreferences("mainSP", Context.MODE_PRIVATE)
+        editor = sp.edit()
+
+        var productViewModel = ProductViewModel(application)
+        var productadapter = ProductAdapter(productViewModel)
 
         auth = FirebaseAuth.getInstance()
 
@@ -41,13 +39,17 @@ class MainActivity : AppCompatActivity() {
             val mauth = FirebaseAuth.getInstance().currentUser
             if (mauth != null) {
                 Toast.makeText(this,mauth.toString(),Toast.LENGTH_LONG).show()
-                productListActivity.putExtra("Auth",mauth)
+                productListActivity.putExtra("Auth",FirebaseAuth.getInstance().currentUser?.uid)
                 startActivity(productListActivity)
-
-
             } else{
                     Toast.makeText(this,"najpeirw sie zaloguj",Toast.LENGTH_LONG).show()
                 }
+        }
+
+
+        binding.checkButton.setOnClickListener {
+            val asd = FirebaseAuth.getInstance().currentUser?.uid
+            Toast.makeText(this,asd,Toast.LENGTH_LONG).show()
         }
 
         binding.singout.setOnClickListener {
@@ -60,8 +62,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(optionsActivity)
         }
 
-        sp = getSharedPreferences("mainSP", Context.MODE_PRIVATE)
-        editor = sp.edit()
+
 
         if (sp.getBoolean("nightMode", false)) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
@@ -69,8 +70,6 @@ class MainActivity : AppCompatActivity() {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         }
         delegate.applyDayNight()
-
-
 
         binding.buttonreg.setOnClickListener {
             Toast.makeText(this, binding.email.text.toString().toString(), Toast.LENGTH_LONG).show()
@@ -86,9 +85,21 @@ class MainActivity : AppCompatActivity() {
                     Log.e("rejestracja", it.exception?.message.toString())
                 }
             }
+
         }
 
         binding.buttonLogin.setOnClickListener {
+//            val user = FirebaseAuth.getInstance().currentUser?.uid?.let { it1 ->
+//                Users(
+//                    it1,
+//                    //it1
+//                )
+
+
+
+//            if (user != null) {
+//                productadapter.addUser(user)
+//            }
             auth.signInWithEmailAndPassword(
                 binding.email.text.toString(),
                 binding.pass.text.toString()
@@ -111,10 +122,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-
-
-
-
 
         if (sp.getBoolean("backgroundColor",false)){
             binding.buttonList.setBackgroundColor(getColor(R.color.green))

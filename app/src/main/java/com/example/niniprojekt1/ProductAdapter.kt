@@ -1,27 +1,37 @@
 package com.example.niniprojekt1
 
 import android.annotation.SuppressLint
-import android.preference.PreferenceManager
+import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import com.example.niniprojekt1.databinding.ActivityMainBinding
 import com.example.niniprojekt1.databinding.ElementBinding
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.*
-import java.lang.annotation.ElementType
 
 class ProductAdapter (private val viewModel: ProductViewModel) : RecyclerView.Adapter<ProductAdapter.ViewHolder>() {
 
     private var products = emptyList<Product>()
+    private lateinit var sp: SharedPreferences
+    private lateinit var editor: SharedPreferences.Editor
 
     var positionPom: Int? = null
+
+
+
+    val user = FirebaseAuth.getInstance().currentUser?.uid
+
 
     class ViewHolder(val binding: ElementBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ElementBinding.inflate(LayoutInflater.from(parent.context))
         return ViewHolder(binding)
+
+
     }
 
     @SuppressLint("SuspiciousIndentation")
@@ -31,13 +41,24 @@ class ProductAdapter (private val viewModel: ProductViewModel) : RecyclerView.Ad
         holder.binding.textView.text = products[position].quantity.toString()
         holder.binding.checkBox.isChecked = products[position].state
 
+
+
+        //sp = getSharedPreferences("mainSP", Context.MODE_PRIVATE)
+
         holder.binding.checkBox.setOnClickListener {
+            //val private =sp.getBoolean("private",false)
             val product = products[position]
 
+
             product.state = !product.state
-            CoroutineScope(Dispatchers.IO).launch {
+
+            //if (private){
                 viewModel.update(product)
-            }
+            //}else{
+                //viewModel.updateUserProduct(user,product)
+            //}
+
+
 
             Toast.makeText(holder.binding.root.context,
                 "Zaktualizowano produkt o id: ${products[position].id}",
@@ -56,45 +77,68 @@ class ProductAdapter (private val viewModel: ProductViewModel) : RecyclerView.Ad
 
     }
 
-    suspend fun update(product: Product){
+     fun update(product: Product){
 
         viewModel.update(product)
-        withContext(Dispatchers.Main){
+
             notifyDataSetChanged()
-        }
+
     }
 
     override fun getItemCount(): Int = products.size
 
-    suspend  fun add(product : Product){
+    fun add(product : Product){
         viewModel.insert(product)
-        withContext(Dispatchers.Main){
+
         notifyDataSetChanged()
-        }
     }
 
-    suspend fun delete(){
+
+    fun addUserProducts(users: String?, product: Product){
+        viewModel.insterUserProduct(users,product)
+            notifyDataSetChanged()
+
+    }
+
+     fun delete(){
 
         if (positionPom != null) {
-            CoroutineScope(Dispatchers.IO).launch {
+
                 viewModel.delete(products[positionPom!!])
-            }
+
+            //positionPom = null
+            //Toast.makeText(ViewHolder., positionPom.toString(), Toast.LENGTH_SHORT).show()
+        }else{
+        }
+
+            notifyDataSetChanged()
+        positionPom = null
+    }
+ fun deleteUserProduct(){
+
+        if (positionPom != null) {
+
+                viewModel.deleteUserProduct(user,products[positionPom!!])
+
             //positionPom = null
             //Toast.makeText(ViewHolder., positionPom.toString(), Toast.LENGTH_SHORT).show()
         }else{
 
         }
-        withContext(Dispatchers.Main){
+
             notifyDataSetChanged()
-        }
+
         positionPom = null
     }
 
-    suspend fun deleteAll(){
+     fun deleteAll(){
         viewModel.deleteAll()
-        withContext(Dispatchers.Main){
             notifyDataSetChanged()
-        }
+    }
+     fun deleteAllUserProducts(){
+        viewModel.deleteAllUserProducts(user)
+            notifyDataSetChanged()
+
     }
 //    suspend fun maxId():Long{
 //        return viewModel.maxId()

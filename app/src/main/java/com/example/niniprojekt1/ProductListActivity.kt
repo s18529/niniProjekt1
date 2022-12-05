@@ -1,21 +1,16 @@
 package com.example.niniprojekt1
 
 import android.content.*
-import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import android.widget.EditText
 import android.widget.Toast
-import androidx.appcompat.widget.AppCompatEditText
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.niniprojekt1.databinding.ActivityProductListBinding
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.*
-import kotlin.math.log
 
 class ProductListActivity : AppCompatActivity() {
 
@@ -34,8 +29,11 @@ class ProductListActivity : AppCompatActivity() {
             binding = ActivityProductListBinding.inflate(layoutInflater)
             setContentView(binding.root)
 
+
             sp = getSharedPreferences("mainSP", Context.MODE_PRIVATE)
             editor = sp.edit()
+
+
 
 
             var productViewModel = ProductViewModel(application)
@@ -45,11 +43,40 @@ class ProductListActivity : AppCompatActivity() {
 //            productadapter.setProducts(it)
 //
 //        })
+
+        if (!binding.switchToPrivate.isChecked) {
             productViewModel.allProducts.observe(this, Observer { productsList ->
                 productsList.let {
                     productadapter.setProducts(productsList.values.toList())
                 }
             })
+            editor.putBoolean("private",false)
+        }else{
+            productViewModel.allUserProduct.observe(this, Observer { productsList ->
+                productsList.let {
+                    productadapter.setProducts(productsList.values.toList())
+                }
+            })
+            editor.putBoolean("private",true)
+        }
+
+        binding.switchToPrivate.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (!isChecked){
+                productViewModel.allProducts.observe(this, Observer { productsList ->
+                    productsList.let {
+                        productadapter.setProducts(productsList.values.toList())
+                    }
+                })
+                editor.putBoolean("private",false)
+            }else{
+                productViewModel.allUserProduct.observe(this, Observer { productsList ->
+                    productsList.let {
+                        productadapter.setProducts(productsList.values.toList())
+                    }
+                })
+                editor.putBoolean("private",true)
+            }
+        }
 
             //LayoutManager do listy
             binding.rv1.layoutManager = LinearLayoutManager(this)
@@ -71,10 +98,18 @@ class ProductListActivity : AppCompatActivity() {
                     quantity = (binding.quantity.text.toString()).toLong(),
                     state = binding.checkBox.isChecked
                 )
-                CoroutineScope(Dispatchers.IO).launch {
 
-                    //Projekt 2
-                    productadapter.add(products)
+
+//
+                    val user = FirebaseAuth.getInstance().currentUser?.uid
+
+                    if (!binding.switchToPrivate.isChecked){
+                        productadapter.add(products)
+                    }else{
+                        productadapter.addUserProducts(user,products)
+                    }
+
+
 
                     val values = ContentValues()
                     values.put(MyContentProvider.name, binding.name.text.toString())
@@ -88,7 +123,7 @@ class ProductListActivity : AppCompatActivity() {
                     binding.price.text.clear()
                     binding.quantity.text.clear()
                     binding.checkBox.isChecked = false
-                }
+
 
                 sendBroadcast(Intent().also {
                     it.component = ComponentName(
@@ -111,15 +146,27 @@ class ProductListActivity : AppCompatActivity() {
             }
 
             binding.buttonDeleteSelected.setOnClickListener() {
-                CoroutineScope(Dispatchers.IO).launch {
+
+
+                if (!binding.switchToPrivate.isChecked){
                     productadapter.delete()
+                }else{
+                    productadapter.deleteUserProduct()
                 }
+
+
             }
 
             binding.buttonDelete.setOnClickListener {
-                CoroutineScope(Dispatchers.IO).launch {
+
+
+                if (!binding.switchToPrivate.isChecked){
                     productadapter.deleteAll()
+                }else{
+                    productadapter.deleteAllUserProducts()
                 }
+
+
                 CoroutineScope(Dispatchers.IO).launch {
                     contentResolver.delete(
                         MyContentProvider.CONTENT_URI,
