@@ -7,24 +7,24 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 
-@Dao
+//@Dao
 interface ProductDao {
 
-    @Query("Select * from product")
+    //@Query("Select * from product")
     fun getProduct(): LiveData<List<Product>>
 
-    @Insert
+    //@Insert
     fun insert(product: Product)
 
-    @Update
+    //@Update
     fun update(product: Product)
 
-    @Delete
+    //@Delete
     fun delete (product: Product)
 
-    @Query("Delete from product")
+   // @Query("Delete from product")
     fun deleteAll()
 
-    @Query("SELECT max(id) FROM product")
+    //@Query("SELECT max(id) FROM product")
     fun maxId() :Long
 }

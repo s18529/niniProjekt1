@@ -1,13 +1,12 @@
 package com.example.niniprojekt1
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
 
-@Entity
+
 data class Product(
-    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+//    @PrimaryKey(autoGenerate = true)
+    var id: String,
     val name: String,
     val price: Double,
-    val quantity: Int,
+    val quantity: Long,
     var state: Boolean,
 )

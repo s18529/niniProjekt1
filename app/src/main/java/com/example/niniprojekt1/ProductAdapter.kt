@@ -96,9 +96,9 @@ class ProductAdapter (private val viewModel: ProductViewModel) : RecyclerView.Ad
             notifyDataSetChanged()
         }
     }
-    suspend fun maxId():Long{
-        return viewModel.maxId()
-    }
+//    suspend fun maxId():Long{
+//        return viewModel.maxId()
+//    }
 
 
     fun setProducts(dbproducts: List<Product>){

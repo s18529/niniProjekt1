@@ -4,6 +4,7 @@ import android.content.*
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.Toast
@@ -12,9 +13,9 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.niniprojekt1.databinding.ActivityProductListBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.*
+import kotlin.math.log
 
 class ProductListActivity : AppCompatActivity() {
 
@@ -23,39 +24,57 @@ class ProductListActivity : AppCompatActivity() {
     private lateinit var editor: SharedPreferences.Editor
     private var maxId :Long=0
 
+    private lateinit var auth: FirebaseAuth
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityProductListBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        //var user = auth.currentUser
 
-        sp = getSharedPreferences("mainSP",Context.MODE_PRIVATE)
-        editor = sp.edit()
+        //if (user != null) {
+            binding = ActivityProductListBinding.inflate(layoutInflater)
+            setContentView(binding.root)
 
-
-        var productViewModel = ProductViewModel(application)
-        var productadapter = ProductAdapter(productViewModel)
-
-        productViewModel.allProducts.observe(this, Observer {
-            productadapter.setProducts(it)
-        })
-
-        //LayoutManager do listy
-        binding.rv1.layoutManager = LinearLayoutManager(this)
-        //DividerItemDecorator (optional)
-        binding.rv1.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
-        //Adapter do Listy
-        binding.rv1.adapter = productadapter
+            sp = getSharedPreferences("mainSP", Context.MODE_PRIVATE)
+            editor = sp.edit()
 
 
-        binding.addButton.setOnClickListener {
-            val products = Product(name = binding.name.text.toString(),
-                price = (binding.price.text.toString()).toDouble(),
-                quantity = (binding.quantity.text.toString()).toInt(),
-                state = binding.checkBox.isChecked)
-            CoroutineScope(Dispatchers.IO).launch {
+            var productViewModel = ProductViewModel(application)
+            var productadapter = ProductAdapter(productViewModel)
 
-                //Projekt 2
-                productadapter.add(products)
+//        productViewModel.allProducts.observe(this, Observer {
+//            productadapter.setProducts(it)
+//
+//        })
+            productViewModel.allProducts.observe(this, Observer { productsList ->
+                productsList.let {
+                    productadapter.setProducts(productsList.values.toList())
+                }
+            })
+
+            //LayoutManager do listy
+            binding.rv1.layoutManager = LinearLayoutManager(this)
+            //DividerItemDecorator (optional)
+            binding.rv1.addItemDecoration(
+                DividerItemDecoration(
+                    this,
+                    DividerItemDecoration.VERTICAL
+                )
+            )
+            //Adapter do Listy
+            binding.rv1.adapter = productadapter
+            binding.addButton.setOnClickListener {
+
+                val products = Product(
+                    id = "1",
+                    name = binding.name.text.toString(),
+                    price = (binding.price.text.toString()).toDouble(),
+                    quantity = (binding.quantity.text.toString()).toLong(),
+                    state = binding.checkBox.isChecked
+                )
+                CoroutineScope(Dispatchers.IO).launch {
+
+                    //Projekt 2
+                    productadapter.add(products)
 
                     val values = ContentValues()
                     values.put(MyContentProvider.name, binding.name.text.toString())
@@ -65,51 +84,52 @@ class ProductListActivity : AppCompatActivity() {
                     contentResolver.insert(MyContentProvider.CONTENT_URI, values)
 
 
-                binding.name.text.clear()
-                binding.price.text.clear()
-                binding.quantity.text.clear()
-                binding.checkBox.isChecked = false
-            }
+                    binding.name.text.clear()
+                    binding.price.text.clear()
+                    binding.quantity.text.clear()
+                    binding.checkBox.isChecked = false
+                }
 
-
-
-            CoroutineScope(Dispatchers.IO).launch {
-                maxId = productadapter.maxId()
-            }
-
-            sendBroadcast(Intent().also {
-                it.component = ComponentName(
-                    "com.example.appprivider",
-                     "com.example.appprivider.ProductsReceiver"
+                sendBroadcast(Intent().also {
+                    it.component = ComponentName(
+                        "com.example.appprivider",
+                        "com.example.appprivider.ProductsReceiver"
                     )
-                it.putExtra("idProduct", maxId)
-                it.putExtra("nameProducts", products.name)
-                it.putExtra("priceProducts", products.price)
-            })
+                    it.putExtra("idProduct", maxId)
+                    it.putExtra("nameProducts", products.name)
+                    it.putExtra("priceProducts", products.price)
+                })
 
-
-            Toast.makeText(binding.root.context,"Dodano nowy produkt",Toast.LENGTH_SHORT).show()
-        }
-
-        binding.buttonDeleteSelected.setOnClickListener(){
-            CoroutineScope(Dispatchers.IO).launch {
-                productadapter.delete()
-            }
-        }
-
-        binding.buttonDelete.setOnClickListener {
-            CoroutineScope(Dispatchers.IO).launch {
-                productadapter.deleteAll()
-            }
-            CoroutineScope(Dispatchers.IO).launch {
-                contentResolver.delete(
-                    MyContentProvider.CONTENT_URI,
-                    null,
-                    null
+                Log.w(
+                    "index",
+                    "----------------------------------------------------------------------------------------------------${maxId}"
                 )
+
+
+                Toast.makeText(binding.root.context, "Dodano nowy produkt", Toast.LENGTH_SHORT)
+                    .show()
+            }
+
+            binding.buttonDeleteSelected.setOnClickListener() {
+                CoroutineScope(Dispatchers.IO).launch {
+                    productadapter.delete()
+                }
+            }
+
+            binding.buttonDelete.setOnClickListener {
+                CoroutineScope(Dispatchers.IO).launch {
+                    productadapter.deleteAll()
+                }
+                CoroutineScope(Dispatchers.IO).launch {
+                    contentResolver.delete(
+                        MyContentProvider.CONTENT_URI,
+                        null,
+                        null
+                    )
+                }
             }
         }
-    }
+
 
     override fun onStart() {
         super.onStart()

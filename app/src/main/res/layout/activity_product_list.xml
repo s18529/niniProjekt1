@@ -11,7 +11,7 @@
         android:layout_width="168dp"
         android:layout_height="46dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="68dp"
+        android:layout_marginTop="96dp"
         android:ems="10"
         android:hint="@string/nameOfProduct"
         android:inputType="text"
@@ -23,7 +23,7 @@
         android:layout_width="168dp"
         android:layout_height="46dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="124dp"
+        android:layout_marginTop="156dp"
         android:ems="10"
         android:hint="@string/quantity"
         android:inputType="number"
@@ -34,8 +34,8 @@
         android:id="@+id/price"
         android:layout_width="168dp"
         android:layout_height="46dp"
-        android:layout_marginTop="68dp"
-        android:layout_marginEnd="19dp"
+        android:layout_marginTop="96dp"
+        android:layout_marginEnd="20dp"
         android:ems="10"
         android:hint="@string/price"
         android:inputType="numberDecimal"
@@ -46,8 +46,8 @@
         android:id="@+id/addButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="2dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
         android:text="@string/add"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/quantity" />
@@ -57,7 +57,7 @@
         android:layout_width="377dp"
         android:layout_height="292dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="31dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/addButton" />
 
@@ -72,7 +72,7 @@
         app:layout_constraintBottom_toTopOf="@+id/addButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/price"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.114" />
 
     <TextView
         android:id="@+id/textView4"
@@ -88,7 +88,7 @@
         android:id="@+id/buttonDelete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="24dp"
         android:text="@string/deleteAll"
         app:layout_constraintEnd_toEndOf="parent"
@@ -98,11 +98,21 @@
         android:id="@+id/buttonDeleteSelected"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="20dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
         android:backgroundTint="@color/red"
         android:text="@string/usu"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rv1" />
+
+    <Switch
+        android:id="@+id/switchToPrivate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="161dp"
+        android:layout_marginTop="12dp"
+        android:text="Private"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

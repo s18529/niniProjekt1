@@ -7,6 +7,7 @@ import android.content.SharedPreferences
 import android.graphics.Typeface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
@@ -15,46 +16,105 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatEditText
 import com.example.niniprojekt1.databinding.ActivityMainBinding
 import com.google.android.material.resources.CancelableFontCallback.ApplyFont
+import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var sp: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
 
-
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        auth = FirebaseAuth.getInstance()
+
         val productListActivity = Intent(applicationContext, ProductListActivity::class.java)
         val optionsActivity = Intent(applicationContext, OptionsActivity::class.java)
+        val mainActivity = Intent(applicationContext, MainActivity::class.java)
 
 
-        binding.buttonList.setOnClickListener{
-            startActivity(productListActivity)
+        binding.buttonList.setOnClickListener {
+            val mauth = FirebaseAuth.getInstance().currentUser
+            if (mauth != null) {
+                Toast.makeText(this,mauth.toString(),Toast.LENGTH_LONG).show()
+                productListActivity.putExtra("Auth",mauth)
+                startActivity(productListActivity)
+
+
+            } else{
+                    Toast.makeText(this,"najpeirw sie zaloguj",Toast.LENGTH_LONG).show()
+                }
         }
+
+        binding.singout.setOnClickListener {
+            auth.signOut()
+            startActivity(mainActivity)
+        }
+
 
         binding.buttonOptions.setOnClickListener {
             startActivity(optionsActivity)
         }
 
-        sp = getSharedPreferences("mainSP",Context.MODE_PRIVATE)
+        sp = getSharedPreferences("mainSP", Context.MODE_PRIVATE)
         editor = sp.edit()
 
-        if (sp.getBoolean("nightMode",false)){
+        if (sp.getBoolean("nightMode", false)) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-        }else{
+        } else {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         }
         delegate.applyDayNight()
 
 
+
+        binding.buttonreg.setOnClickListener {
+            Toast.makeText(this, binding.email.text.toString().toString(), Toast.LENGTH_LONG).show()
+            auth.createUserWithEmailAndPassword(
+                binding.email.text.toString(),
+                binding.pass.text.toString()
+
+            ).addOnCompleteListener {
+                if (it.isSuccessful) {
+                    Toast.makeText(this, "Rejestracja powiodła się", Toast.LENGTH_LONG).show()
+                } else {
+                    Toast.makeText(this, "Rejestracja nie powiodła się", Toast.LENGTH_LONG).show()
+                    Log.e("rejestracja", it.exception?.message.toString())
+                }
+            }
+        }
+
+        binding.buttonLogin.setOnClickListener {
+            auth.signInWithEmailAndPassword(
+                binding.email.text.toString(),
+                binding.pass.text.toString()
+            ).addOnCompleteListener {
+                if (it.isSuccessful) {
+                    val upIntent = Intent(this,ProductListActivity::class.java)
+                    Toast.makeText(this, "Logowanie powiodło się", Toast.LENGTH_LONG).show()
+                    startActivity(upIntent)
+                } else {
+                    Toast.makeText(this, "Logowanie nie powiodło się", Toast.LENGTH_LONG).show()
+                    Log.e("logowanie", it.exception?.message.toString())
+                }
+            }
+        }
     }
+
+
+
+
 
     override fun onStart() {
         super.onStart()
+
+
+
+
 
         if (sp.getBoolean("backgroundColor",false)){
             binding.buttonList.setBackgroundColor(getColor(R.color.green))
