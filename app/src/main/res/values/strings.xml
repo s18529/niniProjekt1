@@ -17,4 +17,9 @@
     <string name="usu">Usuń</string>
     <string name="kolor_zielony">Kolor Zielony</string>
     <string name="czy_kupiony">Czy kupiony?</string>
+    <string name="email">email</string>
+    <string name="password">password</string>
+    <string name="login">login</string>
+    <string name="register">register</string>
+    <string name="sing_out">sing out!</string>
 </resources>

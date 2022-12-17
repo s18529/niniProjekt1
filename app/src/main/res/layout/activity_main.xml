@@ -11,21 +11,21 @@
         android:id="@+id/buttonList"
         android:layout_width="142dp"
         android:layout_height="117dp"
-        android:layout_marginStart="36dp"
-        android:layout_marginTop="184dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="175dp"
         android:text="@string/lista_produkt_w"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonLogin" />
 
     <Button
         android:id="@+id/buttonOptions"
         android:layout_width="142dp"
         android:layout_height="117dp"
-        android:layout_marginTop="184dp"
-        android:layout_marginEnd="36dp"
+        android:layout_marginTop="82dp"
+        android:layout_marginEnd="40dp"
         android:text="@string/ustawienia"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/singout" />
 
     <TextView
         android:id="@+id/mainTV"
@@ -41,16 +41,17 @@
         android:id="@+id/email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="96dp"
+        android:layout_marginStart="106dp"
+        android:layout_marginTop="52dp"
+        android:layout_marginBottom="548dp"
+        android:autofillHints=""
         android:ems="10"
-        android:hint="email"
+        android:hint="@string/email"
         android:inputType="textEmailAddress"
         android:minHeight="48dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonList"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mainTV" />
 
     <EditText
         android:id="@+id/pass"
@@ -59,19 +60,21 @@
         android:layout_marginStart="105dp"
         android:layout_marginTop="26dp"
         android:ems="10"
-        android:hint="password"
+        android:hint="@string/password"
         android:inputType="textPassword"
         android:minHeight="48dp"
+        android:textColorHint="#757575"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/email" />
+        app:layout_constraintTop_toBottomOf="@+id/email"
+        android:autofillHints="" />
 
     <Button
         android:id="@+id/buttonLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="43dp"
-        android:layout_marginTop="81dp"
-        android:text="ButtonLogin"
+        android:layout_marginStart="72dp"
+        android:layout_marginTop="52dp"
+        android:text="@string/login"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/pass" />
 
@@ -79,9 +82,9 @@
         android:id="@+id/buttonreg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="82dp"
-        android:layout_marginEnd="33dp"
-        android:text="Buttonreg"
+        android:layout_marginTop="52dp"
+        android:layout_marginEnd="64dp"
+        android:text="@string/register"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/pass" />
 
@@ -89,21 +92,12 @@
         android:id="@+id/singout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="168dp"
-        android:layout_marginTop="50dp"
-        android:text="Sing Out!"
+        android:layout_marginStart="240dp"
+        android:layout_marginTop="44dp"
+        android:text="@string/sing_out"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/buttonreg" />
 
-    <Button
-        android:id="@+id/checkButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="36dp"
-        android:layout_marginTop="8dp"
-        android:text="checkButton"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonLogin" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

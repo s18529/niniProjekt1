@@ -46,12 +46,6 @@ class MainActivity : AppCompatActivity() {
                 }
         }
 
-
-        binding.checkButton.setOnClickListener {
-            val asd = FirebaseAuth.getInstance().currentUser?.uid
-            Toast.makeText(this,asd,Toast.LENGTH_LONG).show()
-        }
-
         binding.singout.setOnClickListener {
             auth.signOut()
             startActivity(mainActivity)

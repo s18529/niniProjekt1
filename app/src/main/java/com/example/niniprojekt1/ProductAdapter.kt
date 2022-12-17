@@ -15,15 +15,8 @@ import kotlinx.coroutines.*
 class ProductAdapter (private val viewModel: ProductViewModel) : RecyclerView.Adapter<ProductAdapter.ViewHolder>() {
 
     private var products = emptyList<Product>()
-    private lateinit var sp: SharedPreferences
-    private lateinit var editor: SharedPreferences.Editor
-
     var positionPom: Int? = null
-
-
-
     val user = FirebaseAuth.getInstance().currentUser?.uid
-
 
     class ViewHolder(val binding: ElementBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -52,11 +45,11 @@ class ProductAdapter (private val viewModel: ProductViewModel) : RecyclerView.Ad
 
             product.state = !product.state
 
-            //if (private){
+            if (!product.isPrivate){
                 viewModel.update(product)
-            //}else{
-                //viewModel.updateUserProduct(user,product)
-            //}
+            }else{
+                viewModel.updateUserProduct(user,product)
+            }
 
 
 

@@ -96,18 +96,20 @@ class ProductListActivity : AppCompatActivity() {
                     name = binding.name.text.toString(),
                     price = (binding.price.text.toString()).toDouble(),
                     quantity = (binding.quantity.text.toString()).toLong(),
-                    state = binding.checkBox.isChecked
+                    state = binding.checkBox.isChecked,
+                    isPrivate = false
                 )
 
 
 //
                     val user = FirebaseAuth.getInstance().currentUser?.uid
 
-                    if (!binding.switchToPrivate.isChecked){
-                        productadapter.add(products)
-                    }else{
-                        productadapter.addUserProducts(user,products)
-                    }
+                if (!binding.switchToPrivate.isChecked){
+                    productadapter.add(products)
+                }else{
+                    products.isPrivate = true
+                    productadapter.addUserProducts(user,products)
+                }
 
 
 

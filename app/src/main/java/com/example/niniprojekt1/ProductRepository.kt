@@ -16,10 +16,6 @@ class ProductRepository(private val firebaseDatabase: FirebaseDatabase) {
             it.value = HashMap<String, Product>()
         }
 
-    val allUserProduct: MutableLiveData<HashMap<String, Users>> =
-        MutableLiveData<HashMap<String, Users>>().also {
-            it.value = HashMap<String, Users>()
-        }
     val allUserProducts: MutableLiveData<HashMap<String, Product>> =
         MutableLiveData<HashMap<String, Product>>().also {
             it.value = HashMap<String, Product>()
@@ -40,7 +36,8 @@ class ProductRepository(private val firebaseDatabase: FirebaseDatabase) {
                         name = snapshot.child("name").value as String,
                         price = snapshot.child("price").value as Double,
                         quantity = snapshot.child("quantity").value as Long,
-                        state = snapshot.child("state").value as Boolean
+                        state = snapshot.child("state").value as Boolean,
+                        isPrivate = snapshot.child("private").value as Boolean
                     )
                     allProducts.value?.put(product.id, product)
                     allProducts.postValue(allProducts.value)
@@ -53,7 +50,8 @@ class ProductRepository(private val firebaseDatabase: FirebaseDatabase) {
                         name = snapshot.child("name").value as String,
                         price = snapshot.child("price").value as Double,
                         quantity = snapshot.child("quantity").value as Long,
-                        state = snapshot.child("state").value as Boolean
+                        state = snapshot.child("state").value as Boolean,
+                        isPrivate = snapshot.child("private").value as Boolean
                     )
                     allProducts.value?.set(product.id, product)
                     allProducts.postValue(allProducts.value)
@@ -66,7 +64,8 @@ class ProductRepository(private val firebaseDatabase: FirebaseDatabase) {
                         name = snapshot.child("name").value as String,
                         price = snapshot.child("price").value as Double,
                         quantity = snapshot.child("quantity").value as Long,
-                        state = snapshot.child("state").value as Boolean
+                        state = snapshot.child("state").value as Boolean,
+                        isPrivate = snapshot.child("private").value as Boolean
                     )
                     Log.i("removed", product.toString())
                     allProducts.value?.remove(product.id)
@@ -133,7 +132,8 @@ class ProductRepository(private val firebaseDatabase: FirebaseDatabase) {
                         name = snapshot.child("name").value as String,
                         price = snapshot.child("price").value as Double,
                         quantity = snapshot.child("quantity").value as Long,
-                        state = snapshot.child("state").value as Boolean
+                        state = snapshot.child("state").value as Boolean,
+                        isPrivate = snapshot.child("private").value as Boolean
                     )
                     allUserProducts.value?.put(product.id, product)
                     allUserProducts.postValue(allUserProducts.value)
@@ -146,7 +146,8 @@ class ProductRepository(private val firebaseDatabase: FirebaseDatabase) {
                         name = snapshot.child("name").value as String,
                         price = snapshot.child("price").value as Double,
                         quantity = snapshot.child("quantity").value as Long,
-                        state = snapshot.child("state").value as Boolean
+                        state = snapshot.child("state").value as Boolean,
+                        isPrivate = snapshot.child("private").value as Boolean
                     )
                     allUserProducts.value?.set(product.id, product)
                     allUserProducts.postValue(allUserProducts.value)
@@ -160,7 +161,8 @@ class ProductRepository(private val firebaseDatabase: FirebaseDatabase) {
                         name = snapshot.child("name").value as String,
                         price = snapshot.child("price").value as Double,
                         quantity = snapshot.child("quantity").value as Long,
-                        state = snapshot.child("state").value as Boolean
+                        state = snapshot.child("state").value as Boolean,
+                        isPrivate = snapshot.child("private").value as Boolean
                     )
                     Log.i("removed", product.toString())
                     allUserProducts.value?.remove(product.id)

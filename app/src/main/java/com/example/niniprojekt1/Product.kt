@@ -9,4 +9,5 @@ data class Product(
     val price: Double?,
     val quantity: Long?,
     var state: Boolean,
+    var isPrivate: Boolean
 )
