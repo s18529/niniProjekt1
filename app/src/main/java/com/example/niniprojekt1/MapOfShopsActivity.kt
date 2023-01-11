@@ -29,8 +29,6 @@ class MapOfShopsActivity : AppCompatActivity() {
     private lateinit var locationManager: LocationManager
     private lateinit var binding: ActivityMapOfShopsBinding
 
-//    private var productViewModel = ProductViewModel(application)
-  //  private var productadapter = ProductAdapter(productViewModel)
     private lateinit var shops: HashMap<String, Shop>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,83 +37,21 @@ class MapOfShopsActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         var productViewModel = ProductViewModel(application)
-        var shopAdapter = ShopAdapter(productViewModel)
-//        productViewModel.allShops.observe(this, Observer {
-//            shops = it
-//
-//             shops = it
-//            for (i in shops.values){
-//                addAnnotationToMap(i.name, i.longitude, i.latitude)
-//            }
-
-
-        //productViewModel.allShops.value?.values?.let { setShops(it.toList()) }
-
-
 
         binding.mapView.also {
             it.getMapboxMap().loadStyleUri(
-                Style.MAPBOX_STREETS
-            ) { //addAnnotationToMap("Warsaw")
+                Style.MAPBOX_STREETS) {
                 productViewModel.allShops.observe(this, Observer {
-                    shops = it
 
                     shops = it
                     for (i in shops.values){
                         addAnnotationToMap(i.name, i.longitude, i.latitude)
                     }
-                /*for (shop: Shop in shops){
-                    addAnnotationToMap(shop.name,shop.longitude, shop.latitude)
-                }*/
-
-
-
-                Toast.makeText(this,shops.size.toString(), Toast.LENGTH_SHORT).show()
-
-                //addAnnotationToMap("aa")
-                //Toast.makeText(this, shops.size.toString(), Toast.LENGTH_SHORT).show()
-             }) //This will happen on MapLoad
-        }
-
-
-
-        binding.btAddLocation.setOnClickListener {
-            //addAnnotationToMap(binding.etTitle.text.toString())
-            //addAnnotationToMapFromList(binding.etTitle.text.toString())
-        }
-
-
-        var permissionsListener: PermissionsListener = object : PermissionsListener {
-            override fun onExplanationNeeded(permissionsToExplain: MutableList<String>?) {
-                TODO("Not yet implemented")
-            }
-
-            override fun onPermissionResult(granted: Boolean) {
-                if (granted) {
-
-                    // Permission sensitive logic called here, such as activating the Maps SDK's LocationComponent to show the device's location
-
-                } else {
-
-                    // User denied the permission
-
-                }
+                })
             }
         }
-        if (PermissionsManager.areLocationPermissionsGranted(this)) {
-
-            // Permission sensitive logic called here, such as activating the Maps SDK's LocationComponent to show the device's location
-
-        } else {
-            permissionsManager = PermissionsManager(permissionsListener)
-            permissionsManager.requestLocationPermissions(this)
-        }
     }
-    }
-//    fun setShops(dbshops: List<Shop>){
-//        shops = dbshops
-//
-//    }
+
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>,
                                             grantResults: IntArray) {
@@ -132,19 +68,16 @@ class MapOfShopsActivity : AppCompatActivity() {
 
         if (ActivityCompat.checkSelfPermission(
                 this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                Manifest.permission.ACCESS_FINE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
                 this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(arrayOf(
                 Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ),1)
+                Manifest.permission.ACCESS_COARSE_LOCATION),
+                1)
             return
-        }
-
+            }
 
             val paOptions = PointAnnotationOptions()
                 .withPoint(Point.fromLngLat(longitude, latitude))
@@ -155,7 +88,4 @@ class MapOfShopsActivity : AppCompatActivity() {
             pointAnnotationManager.create(paOptions)
 
     }
-
-
-
 }

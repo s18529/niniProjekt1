@@ -134,7 +134,7 @@ class ListOfShopsActivity : AppCompatActivity() {
     private fun addGeofence(name: String,longitude: Double,latitude: Double, radius: Long){
 
         val geofence = Geofence.Builder()
-            .setRequestId("geo ${name}")
+            .setRequestId("${name}")
             .setCircularRegion(latitude, longitude, radius.toFloat())
             .setExpirationDuration(30*60*1000)
             .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER or Geofence.GEOFENCE_TRANSITION_EXIT)

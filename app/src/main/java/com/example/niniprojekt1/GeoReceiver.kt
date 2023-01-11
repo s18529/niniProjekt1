@@ -21,7 +21,6 @@ class GeoReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
 
-
         var pom = Random.nextInt(0, 1000)
 
         var pomString = ""
@@ -32,12 +31,12 @@ class GeoReceiver : BroadcastReceiver() {
                 Log.i("geofence", "Geofence with id: ${geofence.requestId} TRIGGERED")
 
             if (geofenceEvent.geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER) {
-                Log.i("geofence1", "We entered to ${geofence.requestId}.")
-                pomString = "We entered to ${geofence.requestId}."
+                Log.i("geofence1", "You entered to  ${geofence.requestId} !!!.")
+                pomString = "Witamy w ${geofence.requestId}."
 
             }else if (geofenceEvent.geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT){
-                Log.i("geofence1", "We left from ${geofence.requestId}.")
-                pomString = "We left from ${geofence.requestId}."
+                Log.i("geofence1", "You left from ${geofence.requestId}.")
+                pomString = "Do zobaczenia ${geofence.requestId}."
 
             }else{
                 Log.i("geofence1", geofenceEvent.geofenceTransition.toString())
@@ -45,7 +44,7 @@ class GeoReceiver : BroadcastReceiver() {
             }
         }
         createNotificationChannel(context)
-        val actIntent = Intent(context, ProductListActivity::class.java)
+        val actIntent = Intent(context, MapOfShopsActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(
             context,
             1,
@@ -56,14 +55,13 @@ class GeoReceiver : BroadcastReceiver() {
 
         val notification = NotificationCompat.Builder(context, channelID)
             .setContentTitle(pomString)
-            .setContentText("sadsdsaadsadsadsdas")
+            .setContentText("")
             .setSmallIcon(R.mipmap.ic_launcher_round)
             .setContentIntent(pendingIntent)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setAutoCancel(true)
             .setGroup("noti Shop Group")
             .build()
-
 
        with( NotificationManagerCompat.from(context)){
            notify(pom, notification)
@@ -74,12 +72,8 @@ class GeoReceiver : BroadcastReceiver() {
         val notificationChannel = NotificationChannel(
             channelID,
             "Student Channel",
-            NotificationManager.IMPORTANCE_DEFAULT
-        )
-        NotificationManagerCompat.from(context)
-            .createNotificationChannel(notificationChannel)
+            NotificationManager.IMPORTANCE_DEFAULT)
 
+        NotificationManagerCompat.from(context).createNotificationChannel(notificationChannel)
     }
-
-
 }
