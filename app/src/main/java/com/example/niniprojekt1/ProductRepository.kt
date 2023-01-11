@@ -21,10 +21,73 @@ class ProductRepository(private val firebaseDatabase: FirebaseDatabase) {
             it.value = HashMap<String, Product>()
         }
 
+    val allShops: MutableLiveData<HashMap<String, Shop>> =
+        MutableLiveData<HashMap<String, Shop>>().also {
+            it.value = HashMap<String, Shop>()
+        }
+
 
     init {
 
         val user = FirebaseAuth.getInstance().currentUser?.uid
+
+
+        firebaseDatabase.getReference("shops")
+            .addChildEventListener(object : ChildEventListener {
+                override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+                    val shop = Shop(
+                        id = snapshot.ref.key as String,
+                        name = snapshot.child("name").value as String,
+                        longitude = snapshot.child("longitude").value as Double,
+                        latitude = snapshot.child("latitude").value as Double,
+                        description = snapshot.child("description").value as String,
+                        radius = snapshot.child("radius").value as Long,
+                        best = snapshot.child("best").value as Boolean
+                    )
+                    allShops.value?.put(shop.id, shop)
+                    allShops.postValue(allShops.value)
+                    Log.i("shopAdd", "Shop added: ${allShops.value.toString()}")
+                }
+
+                override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+                    val shop = Shop(
+                        id = snapshot.ref.key as String,
+                        name = snapshot.child("name").value as String,
+                        longitude = snapshot.child("longitude").value as Double,
+                        latitude = snapshot.child("latitude").value as Double,
+                        description = snapshot.child("description").value as String,
+                        radius = snapshot.child("radius").value as Long,
+                        best = snapshot.child("best").value as Boolean
+                    )
+                    allShops.value?.set(shop.id, shop)
+                    allShops.postValue(allShops.value)
+                    Log.i("shopChange", "Shop updated: ${shop.id}")
+                }
+
+                override fun onChildRemoved(snapshot: DataSnapshot) {
+                    val shop = Shop(
+                        id = snapshot.ref.key as String,
+                        name = snapshot.child("name").value as String,
+                        longitude = snapshot.child("longitude").value as Double,
+                        latitude = snapshot.child("latitude").value as Double,
+                        description = snapshot.child("description").value as String,
+                        radius = snapshot.child("radius").value as Long,
+                        best = snapshot.child("best").value as Boolean
+                    )
+                    Log.i("removed", shop.toString())
+                    allShops.value?.remove(shop.id)
+                    allShops.postValue(allShops.value)
+
+                }
+
+                override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+            })
 
 
 
@@ -177,10 +240,32 @@ class ProductRepository(private val firebaseDatabase: FirebaseDatabase) {
                     TODO("Not yet implemented")
                 }
             })
-
     }
 
     // val allProduct = productDao.getProduct()
+
+
+    fun insertShop(shop: Shop) {
+        firebaseDatabase.getReference("shops").push().also {
+            shop.id = it.ref.key!!
+            it.setValue(shop)
+        }
+    }
+    fun updateShop(shop: Shop) {
+
+        var ref = firebaseDatabase.getReference("shops/${shop.id}")
+        ref.child("name").setValue(shop.name)
+        ref.child("longitude").setValue(shop.longitude)
+        ref.child("latitude").setValue(shop.latitude)
+        ref.child("description").setValue(shop.description)
+        ref.child("radius").setValue(shop.radius)
+        ref.child("best").setValue(shop.best)
+    }
+    fun deleteShop(shop: Shop) =
+        firebaseDatabase.getReference("shops/${shop.id}").removeValue()
+
+    fun deleteAllShops() = firebaseDatabase.getReference("shops").removeValue()
+
 
      fun inster(product: Product) {
         firebaseDatabase.getReference("products").push().also {

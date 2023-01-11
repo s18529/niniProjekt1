@@ -1,14 +1,25 @@
 package com.example.niniprojekt1
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.app.ActivityCompat
+import androidx.lifecycle.Observer
 import com.example.niniprojekt1.databinding.ActivityMainBinding
+import com.google.android.gms.location.Geofence
+import com.google.android.gms.location.GeofencingClient
+import com.google.android.gms.location.GeofencingRequest
+import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : AppCompatActivity() {
@@ -16,17 +27,21 @@ class MainActivity : AppCompatActivity() {
     private lateinit var sp: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
     private lateinit var auth: FirebaseAuth
+    private lateinit var geoClient: GeofencingClient
+    private lateinit var shops: HashMap<String, Shop>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
         sp = getSharedPreferences("mainSP", Context.MODE_PRIVATE)
         editor = sp.edit()
 
         var productViewModel = ProductViewModel(application)
         var productadapter = ProductAdapter(productViewModel)
+
 
         auth = FirebaseAuth.getInstance()
 
@@ -83,17 +98,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.buttonLogin.setOnClickListener {
-//            val user = FirebaseAuth.getInstance().currentUser?.uid?.let { it1 ->
-//                Users(
-//                    it1,
-//                    //it1
-//                )
 
-
-
-//            if (user != null) {
-//                productadapter.addUser(user)
-//            }
             auth.signInWithEmailAndPassword(
                 binding.email.text.toString(),
                 binding.pass.text.toString()
@@ -108,8 +113,86 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+
+
+//        val newList: List<Shop> = emptyList()
+//
+//        geoClient = LocationServices.getGeofencingClient(this)
+//
+//        binding.buttonList.setOnClickListener {
+//            if (ActivityCompat.checkSelfPermission(
+//                    this,
+//                    Manifest.permission.ACCESS_FINE_LOCATION
+//                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+//                    this,
+//                    Manifest.permission.ACCESS_COARSE_LOCATION
+//                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+//                    this,
+//                    Manifest.permission.ACCESS_BACKGROUND_LOCATION
+//                ) != PackageManager.PERMISSION_GRANTED
+//            ) {
+//                requestPermissions(
+//                    arrayOf(
+//                        Manifest.permission.ACCESS_FINE_LOCATION,
+//                        Manifest.permission.ACCESS_COARSE_LOCATION,
+//                        Manifest.permission.ACCESS_BACKGROUND_LOCATION
+//                    ), 1
+//                )
+//            }
+//
+//        }
+//        productViewModel.allShops.observe(this, Observer {
+//            shops = it
+//
+//
+//            LocationServices.getFusedLocationProviderClient(this).lastLocation
+//                .addOnSuccessListener {
+//                    if(it==null){
+//                        Log.e("geofenceApp", "Location is null.")
+//                    }else{
+//                        Log.i("geofenceApp", "Location: ${it.latitude}, ${it.longitude}")
+//                    }
+//                    for (i in shops.values){
+//                        addGeofence(i.name, i.longitude, i.latitude, i.radius)
+//                    }
+//
+//                }
+//                .addOnFailureListener {
+//                    Log.e("geofenceApp", "Location error: ${it.message.toString()}")
+//                }
+//        })
     }
 
+    @SuppressLint("MissingPermission")
+    private fun addGeofence(name: String,longitude: Double,latitude: Double, radius: Long){
+
+        val geofence = Geofence.Builder()
+            .setRequestId("geo ${name}")
+            .setCircularRegion(latitude, longitude, radius.toFloat())
+            .setExpirationDuration(30*60*1000)
+            .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER or Geofence.GEOFENCE_TRANSITION_EXIT)
+            .build()
+
+        val geoRequest = GeofencingRequest.Builder()
+            .addGeofence(geofence)
+            .build()
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            this,
+            1,
+            Intent(this, GeoReceiver::class.java),
+            PendingIntent.FLAG_MUTABLE
+        )
+
+        geoClient.addGeofences(geoRequest, pendingIntent)
+            .addOnSuccessListener {
+                Log.i("geofenceApp", "Geofence: ${geofence.requestId}  is added!")
+
+            }
+            .addOnFailureListener {
+                Log.e("geofenceApp", it.message.toString()) //ERROR 1004 = missing ACCESS_BACKGROUND_PERMISSION
+            }
+    }
 
 
 
@@ -126,6 +209,3 @@ class MainActivity : AppCompatActivity() {
         }
     }
 }
-
-
-

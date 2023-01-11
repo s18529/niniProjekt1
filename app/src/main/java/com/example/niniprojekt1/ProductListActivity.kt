@@ -29,11 +29,14 @@ class ProductListActivity : AppCompatActivity() {
             binding = ActivityProductListBinding.inflate(layoutInflater)
             setContentView(binding.root)
 
+        val productListActivity = Intent(applicationContext, ListOfShopsActivity::class.java)
+
+        binding.listOfShops.setOnClickListener {
+            startActivity(productListActivity)
+        }
 
             sp = getSharedPreferences("mainSP", Context.MODE_PRIVATE)
             editor = sp.edit()
-
-
 
 
             var productViewModel = ProductViewModel(application)

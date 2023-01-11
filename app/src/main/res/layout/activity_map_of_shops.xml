@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MapOfShopsActivity">
+
+
+  <com.mapbox.maps.MapView
+      android:id="@+id/mapView"
+      android:layout_width="match_parent"
+      android:layout_height="600dp"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:mapbox_cameraTargetLat="52.0"
+      app:mapbox_cameraTargetLng="21.0"
+      app:mapbox_cameraZoom="9.0" />
+
+  <Button
+      android:id="@+id/btAddLocation"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="Add marker"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/mapView" />
+
+  <EditText
+      android:id="@+id/etTitle"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="4dp"
+      android:hint="Nazwa"
+      app:layout_constraintStart_toEndOf="@id/btAddLocation"
+      app:layout_constraintTop_toBottomOf="@id/mapView" />
+
+  <EditText
+      android:id="@+id/etOpis"
+      android:layout_width="408dp"
+      android:layout_height="40dp"
+      android:hint="opis"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/btAddLocation" />
+
+  <EditText
+      android:id="@+id/etPromien"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="68dp"
+      android:hint="Promień"
+      android:inputType="number"
+      app:layout_constraintStart_toEndOf="@id/btAddLocation"
+      app:layout_constraintTop_toBottomOf="@id/mapView" />
+</androidx.constraintlayout.widget.ConstraintLayout>
